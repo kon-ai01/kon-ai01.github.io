@@ -129,6 +129,18 @@
   .foot{text-align:center;color:var(--muted);font-size:.78rem;margin-top:24px}
   .foot b{color:#cdbcff}
 
+  /* ---- 画像保存モーダル ---- */
+  .modal{
+    position:fixed;inset:0;z-index:60;
+    background:rgba(5,4,10,.86);backdrop-filter:blur(5px);
+    display:none;flex-direction:column;align-items:center;justify-content:center;
+    padding:24px;gap:14px;
+  }
+  .modal.open{display:flex;animation:rise .3s ease both}
+  .modal img{max-width:100%;max-height:68vh;border-radius:16px;box-shadow:var(--shadow)}
+  .modal .hint{color:var(--muted);font-size:.88rem;text-align:center;line-height:1.6}
+  .modal .mclose{max-width:280px}
+
   @media(min-width:600px){
     .panel{padding:40px 38px}
   }
@@ -193,12 +205,20 @@
     </div>
 
     <div class="r-actions">
-      <button class="btn" id="copyBtn">結果をコピーしてシェア</button>
+      <button class="btn" id="saveImgBtn">結果を画像で保存</button>
+      <button class="btn secondary" id="copyBtn">結果をテキストでコピー</button>
       <button class="btn secondary" id="retryBtn">もう一度診断する</button>
     </div>
     <div class="copied" id="copied">コピーしたよ。Threadsに貼ってね</div>
     <div class="foot">#あなたのAIタイプ診断　みんなの結果コメントで教えて</div>
   </section>
+
+  <!-- 画像保存モーダル -->
+  <div class="modal" id="imgModal">
+    <img id="modalImg" alt="診断結果カード" />
+    <p class="hint">保存できない時は画像を長押し →「写真に保存」<br>（PCは右クリック →「画像を保存」）</p>
+    <button class="btn secondary mclose" id="modalClose">閉じる</button>
+  </div>
 
 </main>
 
@@ -401,11 +421,96 @@
 
   function start(){ idx=0; answers=[]; renderQuestion(); show("quiz"); }
 
+  // ---- 画像生成（Canvas・外部ライブラリ不要） ----
+  var COLORS = { otaku:"#22d3ee", eff:"#f59e0b", alch:"#8b7cf6", creator:"#ec4899", partner:"#34d399", payer:"#f87171" };
+
+  function hexA(hex, a){
+    var n = parseInt(hex.slice(1),16);
+    return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";
+  }
+  function wrapText(ctx, text, maxW){
+    var chars = text.split(""), lines = [], line = "";
+    for(var i=0;i<chars.length;i++){
+      var test = line + chars[i];
+      if(ctx.measureText(test).width > maxW && line){ lines.push(line); line = chars[i]; }
+      else line = test;
+    }
+    if(line) lines.push(line);
+    return lines;
+  }
+
+  function drawShareCard(key){
+    var T = TYPES[key], accent = COLORS[key] || "#8b7cf6";
+    var S = 1080;
+    var c = document.createElement("canvas"); c.width = S; c.height = S;
+    var x = c.getContext("2d");
+
+    // 背景
+    var g = x.createLinearGradient(0,0,S,S);
+    g.addColorStop(0,"#15121f"); g.addColorStop(1,"#0b0913");
+    x.fillStyle = g; x.fillRect(0,0,S,S);
+    // アクセントの光
+    var rg = x.createRadialGradient(S*0.5,S*0.34,30,S*0.5,S*0.34,640);
+    rg.addColorStop(0,hexA(accent,0.30)); rg.addColorStop(1,"rgba(0,0,0,0)");
+    x.fillStyle = rg; x.fillRect(0,0,S,S);
+    // 枠
+    x.strokeStyle = hexA(accent,0.55); x.lineWidth = 6;
+    x.strokeRect(30,30,S-60,S-60);
+
+    x.textAlign = "center";
+    // キッカー
+    x.fillStyle = "#a89fc4"; x.font = "600 32px system-ui,sans-serif";
+    x.fillText("あなたのAIタイプは", S/2, 195);
+    // 絵文字
+    x.font = "190px 'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',system-ui,sans-serif";
+    x.fillText(T.emoji, S/2, 420);
+    // タイトル
+    x.fillStyle = "#ffffff"; x.font = "800 84px system-ui,sans-serif";
+    x.fillText(T.title + "タイプ", S/2, 545);
+    // キャッチ（折り返し）
+    x.fillStyle = accent; x.font = "600 42px system-ui,sans-serif";
+    var cl = wrapText(x, "「" + T.catch + "」", S-240);
+    var cy = 635; cl.forEach(function(ln){ x.fillText(ln, S/2, cy); cy += 58; });
+    // 区切り線
+    x.strokeStyle = "rgba(255,255,255,0.12)"; x.lineWidth = 2;
+    x.beginPath(); x.moveTo(190, cy+24); x.lineTo(S-190, cy+24); x.stroke();
+    // 強み
+    x.fillStyle = "#ddd6ef"; x.font = "400 33px system-ui,sans-serif";
+    var sl = wrapText(x, "💪 " + T.strong, S-220);
+    var sy = cy + 86; sl.forEach(function(ln){ x.fillText(ln, S/2, sy); sy += 48; });
+    // フッター
+    x.fillStyle = "#cdbcff"; x.font = "700 36px system-ui,sans-serif";
+    x.fillText("#あなたのAIタイプ診断", S/2, S-128);
+    x.fillStyle = "#7c7398"; x.font = "500 28px system-ui,sans-serif";
+    x.fillText("kon-ai01.github.io/ai-shindan", S/2, S-78);
+
+    return c;
+  }
+
+  function saveImage(){
+    var key = el("copyBtn").dataset.key;
+    if(!key) return;
+    var canvas = drawShareCard(key);
+    var dataURL;
+    try { dataURL = canvas.toDataURL("image/png"); } catch(e){ return; }
+    // ダウンロード（PC/Android）
+    var a = document.createElement("a");
+    a.href = dataURL; a.download = "AIタイプ診断.png";
+    document.body.appendChild(a); a.click(); a.remove();
+    // モーダル表示（iOS等は長押し保存）
+    el("modalImg").src = dataURL;
+    el("imgModal").classList.add("open");
+  }
+  function closeModal(){ el("imgModal").classList.remove("open"); }
+
   // ---- イベント ----
   el("startBtn").addEventListener("click", start);
   el("retryBtn").addEventListener("click", function(){ start(); });
   el("backBtn").addEventListener("click", back);
   el("copyBtn").addEventListener("click", copyResult);
+  el("saveImgBtn").addEventListener("click", saveImage);
+  el("modalClose").addEventListener("click", closeModal);
+  el("imgModal").addEventListener("click", function(e){ if(e.target === el("imgModal")) closeModal(); });
 
 })();
 </script>
