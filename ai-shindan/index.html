@@ -96,14 +96,21 @@
   /* ---- Result : character sheet ---- */
   #result{padding:26px 20px 30px}
   .sheet-top{text-align:center;position:relative}
-  .avatar{width:230px;height:230px;margin:0 auto -6px;position:relative}
-  .mascot{width:100%;height:100%;overflow:visible;animation:float 4s ease-in-out infinite}
+  .avatar{width:240px;height:240px;margin:0 auto -4px;position:relative}
+  .avatar .aura{position:absolute;inset:-6%;border-radius:50%;filter:blur(2px)}
+  .avatar .fx{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  .avatar .fx .orbit{transform-origin:130px 130px;animation:spin 16s linear infinite}
+  .avatar .fx .pt{transform-origin:center;animation:tw 2.4s ease-in-out infinite}
+  .avatar .fx .pt:nth-child(odd){animation-delay:.9s}
+  .avatar .char{position:absolute;inset:0;animation:float 4s ease-in-out infinite}
+  .avatar .char svg{width:100%;height:100%;overflow:visible;display:block}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
-  .mascot .orbit{transform-origin:130px 130px;animation:spin 14s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .mascot .pt{animation:tw 2.4s ease-in-out infinite}
-  .mascot .pt:nth-child(odd){animation-delay:.8s}
-  @keyframes tw{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
+  @keyframes tw{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+  .compat .ce{display:block;width:60px;height:60px;margin:2px auto 4px}
+  .compat .ce svg{width:100%;height:100%;display:block}
+  .stat.top .sn{color:#fff}
+  .stat.top .sn::after{content:"TOP";font-size:.6rem;font-weight:800;letter-spacing:.06em;color:var(--tc);background:rgba(255,255,255,.06);border:1px solid var(--line);padding:1px 5px;border-radius:6px;margin-left:6px;vertical-align:1px}
   .rarity{font-size:1.15rem;letter-spacing:.18em;margin-top:2px}
   .rarity .on{color:var(--tc);text-shadow:0 0 12px var(--tc)}
   .rarity .off{color:rgba(255,255,255,.18)}
@@ -216,6 +223,7 @@
 
 </main>
 
+<script src="_mascots.js"></script>
 <script>
 (function(){
   "use strict";
@@ -369,45 +377,31 @@
   function rarityStars(n){
     var s="";for(var i=0;i<5;i++){s+='<span class="'+(i<n?"on":"off")+'">★</span>';}return s;
   }
-  function svgParticles(t){
-    var pts=[[40,70],[210,90],[60,200],[195,195],[130,30],[225,150]];
+  function fxParticles(t){
+    var pts=[[40,70],[212,92],[58,198],[196,196],[128,28],[228,150]];
     var s="";
-    pts.forEach(function(p){
-      s+='<circle class="pt" cx="'+p[0]+'" cy="'+p[1]+'" r="5" fill="'+t.color+'"/>';
-    });
+    pts.forEach(function(p,i){ s+='<circle class="pt" cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i%2?4:5.5)+'" fill="'+t.color+'"/>'; });
     return s;
   }
-  function mascotSVG(t){
-    var id=t.key;
+  function avatarHTML(t){
+    var ch=(window.MASCOTS&&window.MASCOTS[t.key])?window.MASCOTS[t.key](t.color,t.color2):"";
     return ''+
-    '<svg viewBox="0 0 260 260" class="mascot">'+
-      '<defs>'+
-        '<radialGradient id="au_'+id+'" cx="50%" cy="44%" r="55%">'+
-          '<stop offset="0%" stop-color="'+t.color+'" stop-opacity=".55"/>'+
-          '<stop offset="100%" stop-color="'+t.color+'" stop-opacity="0"/>'+
-        '</radialGradient>'+
-        '<linearGradient id="bd_'+id+'" x1="0" y1="0" x2="1" y2="1">'+
-          '<stop offset="0%" stop-color="'+t.color+'"/>'+
-          '<stop offset="100%" stop-color="'+t.color2+'"/>'+
-        '</linearGradient>'+
-      '</defs>'+
-      '<circle cx="130" cy="122" r="122" fill="url(#au_'+id+')"/>'+
-      '<g class="orbit"><ellipse cx="130" cy="132" rx="116" ry="46" fill="none" stroke="'+t.color+'" stroke-opacity=".28" stroke-width="2"/></g>'+
-      svgParticles(t)+
-      '<ellipse cx="106" cy="222" rx="15" ry="9" fill="'+t.color2+'" opacity=".9"/>'+
-      '<ellipse cx="154" cy="222" rx="15" ry="9" fill="'+t.color2+'" opacity=".9"/>'+
-      '<ellipse cx="130" cy="150" rx="80" ry="76" fill="url(#bd_'+id+')"/>'+
-      '<ellipse cx="102" cy="120" rx="28" ry="19" fill="#fff" opacity=".24"/>'+
-      '<text x="130" y="150" font-size="80" text-anchor="middle" dominant-baseline="central">'+t.emoji+'</text>'+
-    '</svg>';
+      '<div class="aura" style="background:radial-gradient(circle at 50% 46%, '+hexA(t.color,.5)+', '+hexA(t.color,0)+' 62%)"></div>'+
+      '<svg class="fx" viewBox="0 0 260 260">'+
+        '<g class="orbit"><ellipse cx="130" cy="134" rx="120" ry="46" fill="none" stroke="'+t.color+'" stroke-opacity=".32" stroke-width="2"/></g>'+
+        fxParticles(t)+
+      '</svg>'+
+      '<div class="char">'+ch+'</div>';
   }
+  function miniMascot(t){ return (window.MASCOTS&&window.MASCOTS[t.key])?window.MASCOTS[t.key](t.color,t.color2):""; }
 
   // ===== ステータスバー =====
   function renderStats(t){
     var box=el("stats");box.innerHTML="";
+    var maxIdx=0;for(var m=1;m<t.stats.length;m++){if(t.stats[m]>t.stats[maxIdx])maxIdx=m;}
     var rows=[];
     STAT_LABELS.forEach(function(name,i){
-      var row=document.createElement("div");row.className="stat";
+      var row=document.createElement("div");row.className="stat"+(i===maxIdx?" top":"");
       row.innerHTML='<span class="sn">'+name+'</span><div class="sbar"><i></i></div><span class="sv">'+t.stats[i]+'</span>';
       box.appendChild(row);rows.push(row.querySelector("i"));
     });
@@ -421,7 +415,7 @@
     var R=el("result");
     R.style.setProperty("--tc",T.color);
     R.style.setProperty("--tc2",T.color2);
-    el("avatar").innerHTML=mascotSVG(T);
+    el("avatar").innerHTML=avatarHTML(T);
     el("rRarity").innerHTML=rarityStars(T.rarity);
     el("rKicker").textContent="AI TYPE ／ "+T.kicker;
     el("rTitle").textContent=T.title+"タイプ";
@@ -430,8 +424,8 @@
     el("rStrong").textContent=T.strong;
     el("rNext").textContent=T.next;
     var g=TYPES[T.good],b=TYPES[T.bad];
-    el("rGoodEmoji").textContent=g.emoji;el("rGood").textContent=g.title+"タイプ";
-    el("rBadEmoji").textContent=b.emoji;el("rBad").textContent=b.title+"タイプ";
+    el("rGoodEmoji").innerHTML=miniMascot(g);el("rGood").textContent=g.title+"タイプ";
+    el("rBadEmoji").innerHTML=miniMascot(b);el("rBad").textContent=b.title+"タイプ";
     el("barFill").style.width="100%";
     el("copyBtn").dataset.key=key;
     el("copied").classList.remove("show");
@@ -460,15 +454,35 @@
   function rr(x,p,y,w,h,r){ if(x.roundRect){x.beginPath();x.roundRect(p,y,w,h,r);} else {x.beginPath();x.moveTo(p+r,y);x.arcTo(p+w,y,p+w,y+h,r);x.arcTo(p+w,y+h,p,y+h,r);x.arcTo(p,y+h,p,y,r);x.arcTo(p,y,p+w,y,r);x.closePath();} }
   function wrapText(ctx,text,maxW){var ch=text.split(""),lines=[],line="";for(var i=0;i<ch.length;i++){var test=line+ch[i];if(ctx.measureText(test).width>maxW&&line){lines.push(line);line=ch[i];}else line=test;}if(line)lines.push(line);return lines;}
 
-  function drawShareCard(key){
+  function loadImg(src){return new Promise(function(res,rej){var im=new Image();im.onload=function(){res(im);};im.onerror=rej;im.src=src;});}
+
+  function drawMascotFX(x,cx,cy,T){
+    var au=x.createRadialGradient(cx,cy-10,20,cx,cy-10,225);
+    au.addColorStop(0,hexA(T.color,.5));au.addColorStop(1,"rgba(0,0,0,0)");
+    x.fillStyle=au;x.beginPath();x.arc(cx,cy-10,225,0,7);x.fill();
+    x.strokeStyle=hexA(T.color,.32);x.lineWidth=3;
+    x.beginPath();x.ellipse(cx,cy+14,188,72,0,0,7);x.stroke();
+    var pts=[[-168,-72],[172,-48],[-122,124],[162,116],[6,-152],[198,64]];
+    pts.forEach(function(p,i){x.fillStyle=hexA(T.color,i%2?.6:.9);x.beginPath();x.arc(cx+p[0],cy+p[1],i%2?6:8,0,7);x.fill();});
+  }
+  async function drawChar(x,cx,cy,size,T){
+    try{
+      var svg=(window.MASCOTS&&window.MASCOTS[T.key])?window.MASCOTS[T.key](T.color,T.color2):null;
+      if(!svg)return;
+      var img=await loadImg("data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg));
+      x.drawImage(img, cx-size/2, cy-size/2, size, size);
+    }catch(e){}
+  }
+
+  async function drawShareCard(key){
     var T=TYPES[key], W=1080, H=1350, cx=W/2;
     var c=document.createElement("canvas");c.width=W;c.height=H;var x=c.getContext("2d");
 
     // 背景
     var g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,"#16121f");g.addColorStop(1,"#08060e");
     x.fillStyle=g;x.fillRect(0,0,W,H);
-    var rg=x.createRadialGradient(cx,360,40,cx,360,720);
-    rg.addColorStop(0,hexA(T.color,.32));rg.addColorStop(1,"rgba(0,0,0,0)");
+    var rg=x.createRadialGradient(cx,360,40,cx,360,760);
+    rg.addColorStop(0,hexA(T.color,.3));rg.addColorStop(1,"rgba(0,0,0,0)");
     x.fillStyle=rg;x.fillRect(0,0,W,H);
     // 枠
     x.strokeStyle=hexA(T.color,.55);x.lineWidth=5;rr(x,34,34,W-68,H-68,34);x.stroke();
@@ -480,71 +494,44 @@
     x.textAlign="center";
     // キッカー
     x.fillStyle=hexA("#ffffff",.62);x.font="800 30px system-ui,sans-serif";
-    x.fillText("AI TYPE DIAGNOSIS ／ "+T.kicker, cx, 132);
+    x.fillText("AI TYPE DIAGNOSIS ／ "+T.kicker, cx, 130);
     // レア度
     x.font="40px system-ui,sans-serif";
     var stars="";for(var i=0;i<5;i++)stars+=(i<T.rarity?"★":"☆");
-    x.fillStyle=hexA(T.color,1);x.fillText(stars, cx, 188);
+    x.fillStyle=hexA(T.color,1);x.fillText(stars, cx, 184);
 
-    // マスコット
-    drawMascot(x, cx, 372, T);
+    // マスコット（Codex作画SVGをラスタライズして合成）
+    drawMascotFX(x, cx, 352, T);
+    await drawChar(x, cx, 348, 392, T);
 
     // 名前
-    x.textAlign="center";
-    x.fillStyle="#ffffff";x.font="900 84px system-ui,sans-serif";
-    x.fillText(T.title+"タイプ", cx, 612);
+    x.textAlign="center";x.fillStyle="#ffffff";x.font="900 84px system-ui,sans-serif";
+    x.fillText(T.title+"タイプ", cx, 600);
     // キャッチ
     x.fillStyle=hexA(T.color,1);x.font="700 40px system-ui,sans-serif";
-    var cl=wrapText(x,"「"+T.catch+"」",W-220);var cy=672;cl.forEach(function(ln){x.fillText(ln,cx,cy);cy+=52;});
+    var cl=wrapText(x,"「"+T.catch+"」",W-220);var cy=662;cl.forEach(function(ln){x.fillText(ln,cx,cy);cy+=52;});
 
     // ステータス
-    var sy=cy+40, step=86;
-    for(var s=0;s<5;s++){ drawStat(x, sy+s*step, STAT_LABELS[s], T.stats[s], T); }
+    var sy=cy+38, step=84;
+    var maxIdx=0;for(var mi=1;mi<T.stats.length;mi++){if(T.stats[mi]>T.stats[maxIdx])maxIdx=mi;}
+    for(var s=0;s<5;s++){ drawStat(x, sy+s*step, STAT_LABELS[s], T.stats[s], T, s===maxIdx); }
 
     // フッター
     x.textAlign="center";
     x.fillStyle=hexA("#ffffff",.92);x.font="800 38px system-ui,sans-serif";
-    x.fillText("#あなたのAIタイプ診断", cx, H-128);
+    x.fillText("#あなたのAIタイプ診断", cx, H-122);
     x.fillStyle=hexA("#ffffff",.4);x.font="500 28px system-ui,sans-serif";
-    x.fillText("kon-ai01.github.io/ai-shindan", cx, H-78);
+    x.fillText("kon-ai01.github.io/ai-shindan", cx, H-74);
 
     return c;
   }
 
-  function drawMascot(x, cx, cy, T){
-    // オーラ
-    var au=x.createRadialGradient(cx,cy-10,20,cx,cy-10,200);
-    au.addColorStop(0,hexA(T.color,.5));au.addColorStop(1,"rgba(0,0,0,0)");
-    x.fillStyle=au;x.beginPath();x.arc(cx,cy-10,200,0,7);x.fill();
-    // 周回リング
-    x.strokeStyle=hexA(T.color,.3);x.lineWidth=3;
-    x.beginPath();x.ellipse(cx,cy+6,170,66,0,0,7);x.stroke();
-    // 粒子
-    var pts=[[-150,-60],[160,-40],[-110,110],[150,100],[10,-140],[180,60]];
-    x.fillStyle=hexA(T.color,.85);
-    pts.forEach(function(p){x.beginPath();x.arc(cx+p[0],cy+p[1],7,0,7);x.fill();});
-    // 足
-    x.fillStyle=hexA(T.color2,.95);
-    x.beginPath();x.ellipse(cx-34,cy+112,22,13,0,0,7);x.fill();
-    x.beginPath();x.ellipse(cx+34,cy+112,22,13,0,0,7);x.fill();
-    // 体
-    var bd=x.createLinearGradient(cx-110,cy-80,cx+110,cy+90);
-    bd.addColorStop(0,T.color);bd.addColorStop(1,T.color2);
-    x.fillStyle=bd;x.beginPath();x.ellipse(cx,cy+24,114,108,0,0,7);x.fill();
-    // ツヤ
-    x.fillStyle="rgba(255,255,255,.24)";x.beginPath();x.ellipse(cx-38,cy-26,40,27,0,0,7);x.fill();
-    // 顔（絵文字）
-    x.textAlign="center";x.textBaseline="middle";
-    x.font="118px 'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',system-ui,sans-serif";
-    x.fillText(T.emoji, cx, cy+22);
-    x.textBaseline="alphabetic";
-  }
-
-  function drawStat(x, y, name, val, T){
+  function drawStat(x, y, name, val, T, top){
     var bx=300, bw=560;
     // 名前
-    x.textAlign="left";x.fillStyle=hexA("#ffffff",.66);x.font="700 34px system-ui,sans-serif";
+    x.textAlign="left";x.fillStyle=top?"#ffffff":hexA("#ffffff",.66);x.font="700 34px system-ui,sans-serif";
     x.fillText(name, 130, y+10);
+    if(top){ var nw=x.measureText(name).width; x.font="800 22px system-ui,sans-serif"; x.fillStyle=hexA(T.color,1); x.fillText("TOP", 130+nw+16, y+7); }
     // トラック
     x.fillStyle="rgba(255,255,255,.1)";rr(x,bx,y-14,bw,28,14);x.fill();
     // フィル
@@ -555,13 +542,17 @@
     x.fillText(val, 1000, y+12);
   }
 
-  function saveImage(){
+  async function saveImage(){
     var key=el("copyBtn").dataset.key;if(!key)return;
-    var canvas=drawShareCard(key);var dataURL;
-    try{dataURL=canvas.toDataURL("image/png");}catch(e){return;}
-    var a=document.createElement("a");a.href=dataURL;a.download="AIタイプ診断.png";
-    document.body.appendChild(a);a.click();a.remove();
-    el("modalImg").src=dataURL;el("imgModal").classList.add("open");
+    var btn=el("saveImgBtn");var label=btn.textContent;btn.disabled=true;btn.textContent="画像を生成中…";
+    try{
+      var canvas=await drawShareCard(key);
+      var dataURL=canvas.toDataURL("image/png");
+      var a=document.createElement("a");a.href=dataURL;a.download="AIタイプ診断.png";
+      document.body.appendChild(a);a.click();a.remove();
+      el("modalImg").src=dataURL;el("imgModal").classList.add("open");
+    }catch(e){}
+    btn.disabled=false;btn.textContent=label;
   }
   function closeModal(){el("imgModal").classList.remove("open");}
 
