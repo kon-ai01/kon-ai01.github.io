@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>あなたのAIタイプ診断｜10問でわかる</title>
+<meta name="description" content="10問でわかる、あなたのAIタイプ診断。スマホでもPCでも遊べる。" />
+<style>
+  :root{
+    --bg:#0d0b14;
+    --bg-2:#15121f;
+    --card:#1c1830;
+    --card-2:#232038;
+    --txt:#f1edf9;
+    --muted:#a89fc4;
+    --line:rgba(255,255,255,.09);
+    --accent:#8b7cf6;
+    --accent-2:#22d3ee;
+    --grad:linear-gradient(135deg,#8b7cf6,#22d3ee);
+    --radius:18px;
+    --shadow:0 24px 60px -28px rgba(0,0,0,.8);
+    --font:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Meiryo",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--font);
+    color:var(--txt);
+    background:
+      radial-gradient(900px 600px at 15% -5%, rgba(139,124,246,.25), transparent 60%),
+      radial-gradient(900px 600px at 100% 10%, rgba(34,211,238,.16), transparent 55%),
+      var(--bg);
+    min-height:100vh;min-height:100dvh;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    padding:env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 24px);
+    display:flex;flex-direction:column;align-items:center;
+  }
+  .stage{width:100%;max-width:560px;margin:auto;padding:28px 0}
+  .panel{
+    background:linear-gradient(180deg,var(--card),var(--bg-2));
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:30px 24px;
+    animation:rise .5s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  .hide{display:none!important}
+
+  /* ---- Intro ---- */
+  .badge{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:.78rem;letter-spacing:.12em;font-weight:700;
+    color:#cdbcff;background:rgba(139,124,246,.15);
+    border:1px solid rgba(139,124,246,.3);
+    padding:6px 14px;border-radius:999px;margin-bottom:18px;
+  }
+  .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--grad)}
+  h1.title{font-size:clamp(1.8rem,7vw,2.5rem);font-weight:900;line-height:1.25;letter-spacing:.01em}
+  h1.title .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{color:var(--muted);margin:16px 0 26px;font-size:1rem}
+  .meta-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+  .chip{font-size:.82rem;color:var(--muted);background:var(--card-2);border:1px solid var(--line);padding:8px 13px;border-radius:10px}
+  .chip b{color:var(--txt)}
+
+  .btn{
+    width:100%;border:none;cursor:pointer;
+    font-family:var(--font);font-weight:700;font-size:1.08rem;
+    color:#0d0b14;background:var(--grad);
+    padding:17px 20px;border-radius:14px;
+    transition:transform .15s ease, filter .2s ease, box-shadow .2s ease;
+    box-shadow:0 12px 30px -12px rgba(139,124,246,.7);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .btn:hover{filter:brightness(1.07)}
+  .btn:active{transform:scale(.985)}
+  .btn.secondary{
+    color:var(--txt);background:var(--card-2);
+    border:1px solid var(--line);box-shadow:none;font-weight:500;font-size:1rem;
+  }
+  .btn.secondary:hover{background:#2a2640}
+
+  /* ---- Quiz ---- */
+  .qhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .qcount{font-size:.85rem;color:var(--muted);font-weight:700;letter-spacing:.04em}
+  .qcount b{color:#cdbcff;font-size:1.05rem}
+  .bar{height:7px;background:var(--card-2);border-radius:999px;overflow:hidden;margin-bottom:26px}
+  .bar > i{display:block;height:100%;width:0;border-radius:999px;background:var(--grad);transition:width .45s cubic-bezier(.3,.8,.3,1)}
+  .qtext{font-size:clamp(1.15rem,4.6vw,1.45rem);font-weight:700;line-height:1.5;margin-bottom:22px}
+  .opts{display:flex;flex-direction:column;gap:11px}
+  .opt{
+    text-align:left;cursor:pointer;
+    font-family:var(--font);font-size:1rem;color:var(--txt);font-weight:500;
+    background:var(--card-2);border:1.5px solid var(--line);
+    padding:15px 16px;border-radius:13px;
+    display:flex;align-items:center;gap:13px;
+    transition:transform .12s ease, border-color .2s ease, background .2s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .opt:hover{border-color:rgba(139,124,246,.55);background:#272343}
+  .opt:active{transform:scale(.99)}
+  .opt .k{
+    flex:0 0 auto;width:27px;height:27px;border-radius:8px;
+    display:grid;place-items:center;font-size:.82rem;font-weight:800;
+    color:#cdbcff;background:rgba(139,124,246,.16);border:1px solid rgba(139,124,246,.3);
+  }
+  .opt.sel{border-color:transparent;background:var(--grad);color:#0d0b14;font-weight:700}
+  .opt.sel .k{background:rgba(13,11,20,.18);color:#0d0b14;border-color:transparent}
+  .back{margin-top:18px;text-align:center}
+  .back button{background:none;border:none;color:var(--muted);font-family:var(--font);font-size:.9rem;cursor:pointer;padding:6px}
+  .back button:hover{color:var(--txt)}
+
+  /* ---- Result ---- */
+  .r-emoji{font-size:4.6rem;line-height:1;text-align:center;margin:6px 0 10px;filter:drop-shadow(0 8px 20px rgba(0,0,0,.5))}
+  .r-kicker{text-align:center;color:var(--muted);font-size:.85rem;letter-spacing:.18em;font-weight:700}
+  .r-title{text-align:center;font-size:clamp(1.6rem,6.5vw,2.2rem);font-weight:900;margin:6px 0 4px}
+  .r-catch{text-align:center;font-weight:700;margin-bottom:18px}
+  .r-desc{color:#ddd6ef;font-size:.98rem;margin-bottom:20px}
+  .r-block{background:var(--card-2);border:1px solid var(--line);border-radius:13px;padding:15px 16px;margin-bottom:11px}
+  .r-block h3{font-size:.78rem;letter-spacing:.1em;color:#cdbcff;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:7px}
+  .r-block p{font-size:.95rem;color:#e7e1f5}
+  .r-compat{display:flex;gap:11px}
+  .r-compat .r-block{flex:1;margin-bottom:0;text-align:center}
+  .r-compat .big{font-size:1.5rem;display:block;margin-bottom:2px}
+  .r-actions{display:flex;flex-direction:column;gap:11px;margin-top:22px}
+  .copied{text-align:center;color:var(--accent-2);font-size:.85rem;font-weight:700;height:18px;margin-top:10px;opacity:0;transition:opacity .3s}
+  .copied.show{opacity:1}
+  .foot{text-align:center;color:var(--muted);font-size:.78rem;margin-top:24px}
+  .foot b{color:#cdbcff}
+
+  @media(min-width:600px){
+    .panel{padding:40px 38px}
+  }
+</style>
+</head>
+<body>
+<main class="stage">
+
+  <!-- INTRO -->
+  <section id="intro" class="panel">
+    <span class="badge"><span class="dot"></span>10問・約1分でわかる</span>
+    <h1 class="title">あなたの<span class="g">AIタイプ</span><br>診断</h1>
+    <p class="lead">直感で10問に答えるだけ。あなたがAIをどう使うタイプか、6つの中から判定するよ。スマホでもPCでも遊べる。</p>
+    <div class="meta-row">
+      <span class="chip"><b>全10問</b></span>
+      <span class="chip"><b>6タイプ</b>判定</span>
+      <span class="chip">所要<b>1分</b></span>
+      <span class="chip">結果コピーで<b>シェアOK</b></span>
+    </div>
+    <button class="btn" id="startBtn">診断をはじめる</button>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="panel hide">
+    <div class="qhead">
+      <span class="qcount">Q<b id="qNum">1</b> <span style="opacity:.5">/ 10</span></span>
+      <span class="qcount" id="qPct">10%</span>
+    </div>
+    <div class="bar"><i id="barFill"></i></div>
+    <p class="qtext" id="qText">質問</p>
+    <div class="opts" id="opts"></div>
+    <div class="back"><button id="backBtn">← 前の質問にもどる</button></div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="panel hide">
+    <div class="r-emoji" id="rEmoji">🔬</div>
+    <div class="r-kicker">あなたのAIタイプは</div>
+    <div class="r-title" id="rTitle">タイプ</div>
+    <div class="r-catch" id="rCatch"></div>
+    <p class="r-desc" id="rDesc"></p>
+
+    <div class="r-block">
+      <h3>💪 強み</h3>
+      <p id="rStrong"></p>
+    </div>
+    <div class="r-block">
+      <h3>🚀 次の一歩</h3>
+      <p id="rNext"></p>
+    </div>
+    <div class="r-compat">
+      <div class="r-block">
+        <h3>相性◎</h3>
+        <span class="big" id="rGoodEmoji">🤝</span>
+        <p id="rGood"></p>
+      </div>
+      <div class="r-block">
+        <h3>相性△</h3>
+        <span class="big" id="rBadEmoji">💸</span>
+        <p id="rBad"></p>
+      </div>
+    </div>
+
+    <div class="r-actions">
+      <button class="btn" id="copyBtn">結果をコピーしてシェア</button>
+      <button class="btn secondary" id="retryBtn">もう一度診断する</button>
+    </div>
+    <div class="copied" id="copied">コピーしたよ。Threadsに貼ってね</div>
+    <div class="foot">#あなたのAIタイプ診断　みんなの結果コメントで教えて</div>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---- データ ----
+  var QUESTIONS = [
+    { q:"AIを開いて、まず何する？", a:[
+      {t:"今日あったことを雑談する", k:"partner"},
+      {t:"やりたい作業をまるっと丸投げ", k:"eff"},
+      {t:"新機能が出てないか探しに行く", k:"otaku"},
+      {t:"指示文をじっくり組み立てる", k:"alch"} ]},
+    { q:"AIへの課金、ぶっちゃけどう？", a:[
+      {t:"気づけば複数課金してる", k:"otaku"},
+      {t:"厳選して1つだけ課金", k:"eff"},
+      {t:"課金してるけど正直持て余してる", k:"payer"},
+      {t:"無料プランを限界まで使い倒す", k:"alch"} ]},
+    { q:"AIで一番つくってみたいのは？", a:[
+      {t:"おしゃれなサイトや画像", k:"creator"},
+      {t:"自分専用のAI相棒", k:"partner"},
+      {t:"どこでも効く神プロンプト", k:"alch"},
+      {t:"課金の元が取れる仕組み", k:"payer"} ]},
+    { q:"回答がイマイチな時の動きは？", a:[
+      {t:"指示文を細かく直す", k:"alch"},
+      {t:"別のAIにも同じこと聞く", k:"otaku"},
+      {t:"もういいやと自分でやる", k:"payer"},
+      {t:"『そうじゃなくて』と会話で詰める", k:"partner"} ]},
+    { q:"友達にAIを勧めるなら一言？", a:[
+      {t:"『まず触ってみ』って背中押す", k:"partner"},
+      {t:"『作れるもの見せたるわ』", k:"creator"},
+      {t:"『この機能ヤバいから見て』", k:"otaku"},
+      {t:"『指示の出し方教えたるわ』", k:"alch"} ]},
+    { q:"1日にAIへ溶かす時間は？", a:[
+      {t:"数時間はガッツリ", k:"otaku"},
+      {t:"必要な時だけサッと", k:"eff"},
+      {t:"契約はしてるけど数えるほど", k:"payer"},
+      {t:"作りたい物がある時に没頭", k:"creator"} ]},
+    { q:"新しいAIツールが出た時は？", a:[
+      {t:"名前は知ってるけど後回し", k:"payer"},
+      {t:"自分の用途に合うかだけ確認", k:"eff"},
+      {t:"プロンプトがどこまで効くか検証", k:"alch"},
+      {t:"とりあえず全部試して比較", k:"otaku"} ]},
+    { q:"AIとの距離感を一言で？", a:[
+      {t:"話し相手・相棒", k:"partner"},
+      {t:"優秀な部下・道具", k:"eff"},
+      {t:"研究対象・推し", k:"otaku"},
+      {t:"創作のパートナー", k:"creator"} ]},
+    { q:"『AIすげぇ』と痺れる瞬間は？", a:[
+      {t:"一発で完璧な成果物が出た時", k:"creator"},
+      {t:"自分のことを分かってくれた時", k:"partner"},
+      {t:"狙った指示がビタっと決まった時", k:"alch"},
+      {t:"面倒な作業が一瞬で消えた時", k:"eff"} ]},
+    { q:"ぶっちゃけ今のホンネは？", a:[
+      {t:"もっと極めたい", k:"otaku"},
+      {t:"もっと作りたい", k:"creator"},
+      {t:"課金分はちゃんと使いこなしたい", k:"payer"},
+      {t:"もっとラクしたい", k:"eff"} ]}
+  ];
+
+  var TYPES = {
+    otaku:{ emoji:"🔬", title:"沼の探求者", kicker:"AI OTAKU",
+      catch:"気づけば数時間。AIに恋してるタイプ。",
+      desc:"新機能が出たら即試す、複数ツールを触り倒す、生粋のAIオタク。知識量はトップクラスで、周りからは『AIのことならこの人』と頼られる存在。沼が深いぶん、たまに時間を溶かしすぎるのだけ注意。",
+      strong:"情報感度と検証量が圧倒的。誰よりも早く『使える機能』を見抜ける。",
+      next:"Claude CodeのHooksやSubagentsまで触ると沼がもう一段深くなる。沼仲間として歓迎。",
+      good:"alch", bad:"payer" },
+    eff:{ emoji:"🏎️", title:"時短ハッカー", kicker:"EFFICIENCY",
+      catch:"ムダな作業はAIに丸投げ。とにかく速い。",
+      desc:"AIは『優秀な部下』。面倒な作業をサクッと片付けて、自分は大事なことに集中するタイプ。費用対効果でツールを選ぶ判断力が高く、ムダ打ちが少ない。",
+      strong:"成果に直結する使い方が上手い。1時間の作業を5分に圧縮できる。",
+      next:"よくやる作業をSkillsに登録すると、毎朝の議事録やメール下書きが一瞬で終わる。",
+      good:"payer", bad:"otaku" },
+    alch:{ emoji:"🧙", title:"プロンプト錬金術師", kicker:"ALCHEMIST",
+      catch:"指示文ひとつでAIを別物にする魔法使い。",
+      desc:"同じAIでも、あなたが指示を出すと出力が化ける。役割設定や言い回しを工夫して、AIの性能を限界まで引き出すタイプ。無料プランでも誰よりも良い結果を出せる。",
+      strong:"プロンプト設計力が高い。AIの『当たり』を自分で作り出せる。",
+      next:"『役割設定+出力フォーマット+禁止事項』の3点セットを型にすると精度がさらに跳ねる。",
+      good:"otaku", bad:"partner" },
+    creator:{ emoji:"🎨", title:"AIクリエイター", kicker:"CREATOR",
+      catch:"AIで『作る』のが好き。手を動かす人。",
+      desc:"サイト・画像・資料・アプリ。AIを使って何かを生み出すのが楽しいタイプ。完成品が目に見えるからモチベが続きやすく、周りに『すごい』と言わせる成果物を出せる。",
+      strong:"アウトプット量が多い。アイデアを形にするスピードが速い。",
+      next:"Claude CodeでLPや診断アプリを0円で公開してみて。この診断もそうやって作れる。",
+      good:"partner", bad:"payer" },
+    partner:{ emoji:"🤝", title:"相棒づかい", kicker:"PARTNER",
+      catch:"AIは話し相手。一緒に考えるタイプ。",
+      desc:"AIを道具じゃなく『相棒』として使うタイプ。雑談・壁打ち・相談で思考を整理するのが得意で、AIとの会話のキャッチボールが自然。続けるほど自分仕様に育っていく。",
+      strong:"会話で深掘りする力が高い。AIから良い答えを引き出す対話がうまい。",
+      next:"Memoryに自分の口調や前提を10行貼ると、会話が一気に『自分専用』になる。",
+      good:"creator", bad:"eff" },
+    payer:{ emoji:"💸", title:"とりあえず課金", kicker:"THE PAYER",
+      catch:"契約はしてる。あとは使うだけ…！",
+      desc:"課金はしてるけど、正直まだ持て余し気味。でも『使いこなしたい』って気持ちはガチなタイプ。伸びしろが一番デカいのはこのタイプ。最初の一歩さえ踏めば化ける。",
+      strong:"行動力（課金)はもうある。あとは習慣化するだけで一気に変わる。",
+      next:"まず1つに絞って、毎日1回だけ使う。それだけで月3,000円の元は普通に取れる。",
+      good:"eff", bad:"otaku" }
+  };
+
+  // ---- 状態 ----
+  var idx = 0;
+  var answers = [];
+  var el = function(id){ return document.getElementById(id); };
+
+  function show(sec){
+    ["intro","quiz","result"].forEach(function(s){ el(s).classList.add("hide"); });
+    el(sec).classList.remove("hide");
+    el(sec).style.animation="none"; void el(sec).offsetWidth; el(sec).style.animation="";
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function renderQuestion(){
+    var Q = QUESTIONS[idx];
+    el("qNum").textContent = idx+1;
+    var pct = Math.round(((idx)/QUESTIONS.length)*100);
+    el("qPct").textContent = pct + "%";
+    el("barFill").style.width = pct + "%";
+    el("qText").textContent = Q.q;
+    el("backBtn").style.visibility = idx===0 ? "hidden" : "visible";
+
+    var box = el("opts");
+    box.innerHTML = "";
+    var letters = ["A","B","C","D"];
+    Q.a.forEach(function(opt, i){
+      var b = document.createElement("button");
+      b.className = "opt" + (answers[idx]===i ? " sel" : "");
+      b.innerHTML = '<span class="k">'+letters[i]+'</span><span>'+opt.t+'</span>';
+      b.addEventListener("click", function(){
+        answers[idx] = i;
+        // 視覚フィードバック後に進む
+        Array.prototype.forEach.call(box.children,function(c){c.classList.remove("sel");});
+        b.classList.add("sel");
+        setTimeout(next, 230);
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function next(){
+    if(answers[idx]===undefined) return;
+    if(idx < QUESTIONS.length-1){ idx++; renderQuestion(); }
+    else { finish(); }
+  }
+  function back(){ if(idx>0){ idx--; renderQuestion(); } }
+
+  function finish(){
+    var score = { otaku:0, eff:0, alch:0, creator:0, partner:0, payer:0 };
+    answers.forEach(function(ai, qi){
+      var k = QUESTIONS[qi].a[ai].k;
+      score[k]++;
+    });
+    // 同点は出現バランス上の優先順位で決定
+    var priority = ["otaku","alch","creator","partner","eff","payer"];
+    var best = priority[0], bestVal = -1;
+    priority.forEach(function(k){ if(score[k] > bestVal){ bestVal = score[k]; best = k; } });
+    renderResult(best);
+  }
+
+  function renderResult(key){
+    var T = TYPES[key];
+    el("rEmoji").textContent = T.emoji;
+    el("result").querySelector(".r-kicker").textContent = "あなたのAIタイプは — " + T.kicker;
+    el("rTitle").textContent = T.title + "タイプ";
+    el("rCatch").textContent = "「" + T.catch + "」";
+    el("rDesc").textContent = T.desc;
+    el("rStrong").textContent = T.strong;
+    el("rNext").textContent = T.next;
+    var g = TYPES[T.good], b = TYPES[T.bad];
+    el("rGoodEmoji").textContent = g.emoji;
+    el("rGood").textContent = g.title + "タイプ";
+    el("rBadEmoji").textContent = b.emoji;
+    el("rBad").textContent = b.title + "タイプ";
+    el("barFill").style.width = "100%";
+    el("copyBtn").dataset.key = key;
+    el("copied").classList.remove("show");
+    show("result");
+  }
+
+  function buildShareText(key){
+    var T = TYPES[key];
+    return "私のAIタイプは " + T.emoji + T.title + "タイプ でした。\n「" + T.catch + "」\n\nあなたのAIタイプは？\n#あなたのAIタイプ診断";
+  }
+
+  function copyResult(){
+    var key = el("copyBtn").dataset.key;
+    var text = buildShareText(key);
+    var done = function(){ el("copied").classList.add("show"); setTimeout(function(){ el("copied").classList.remove("show"); },2600); };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){ legacyCopy(text); done(); });
+    } else { legacyCopy(text); done(); }
+  }
+  function legacyCopy(text){
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try{ document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  function start(){ idx=0; answers=[]; renderQuestion(); show("quiz"); }
+
+  // ---- イベント ----
+  el("startBtn").addEventListener("click", start);
+  el("retryBtn").addEventListener("click", function(){ start(); });
+  el("backBtn").addEventListener("click", back);
+  el("copyBtn").addEventListener("click", copyResult);
+
+})();
+</script>
+</body>
+</html>
