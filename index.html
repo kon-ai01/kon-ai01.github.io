@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Osteria del Sole｜太陽と土の恵みを、皿の上に。</title>
+<meta name="description" content="季節のイタリア郷土料理と自然派ワイン。一日一組から大切にする、小さなオステリア。" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+JP:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#1a1410;
+    --bg-2:#221a14;
+    --cream:#f5efe6;
+    --paper:#efe7d8;
+    --gold:#c8a45c;
+    --gold-soft:#d9bd7e;
+    --terra:#a8492f;
+    --green:#5a6b4a;
+    --ink:#2a221c;
+    --muted:#8a7d6c;
+    --serif:"Noto Serif JP",serif;
+    --display:"Cormorant Garamond",serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--serif);
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.9;
+    font-weight:300;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+  .eyebrow{
+    font-family:var(--display);
+    letter-spacing:.42em;
+    text-transform:uppercase;
+    font-size:.78rem;
+    color:var(--gold);
+    font-weight:600;
+  }
+  .section-title{
+    font-family:var(--display);
+    font-size:clamp(2.2rem,5vw,3.4rem);
+    font-weight:500;
+    line-height:1.15;
+    margin:.4em 0 .6em;
+    color:var(--ink);
+  }
+  .section-title.light{color:var(--cream)}
+
+  /* ---------- Nav ---------- */
+  header{
+    position:fixed;top:0;left:0;width:100%;z-index:50;
+    transition:background .4s ease, padding .4s ease;
+    padding:24px 0;
+  }
+  header.scrolled{
+    background:rgba(26,20,16,.92);
+    backdrop-filter:blur(8px);
+    padding:14px 0;
+    box-shadow:0 1px 0 rgba(200,164,92,.18);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between}
+  .brand{
+    font-family:var(--display);
+    font-size:1.5rem;letter-spacing:.18em;
+    color:var(--cream);font-weight:600;
+  }
+  .brand small{display:block;font-size:.55rem;letter-spacing:.5em;color:var(--gold);margin-top:2px}
+  .nav-links{display:flex;gap:34px;align-items:center}
+  .nav-links a{
+    font-family:var(--display);
+    color:var(--cream);
+    letter-spacing:.18em;
+    font-size:.95rem;
+    opacity:.85;transition:opacity .3s,color .3s;
+  }
+  .nav-links a:hover{opacity:1;color:var(--gold-soft)}
+  .nav-cta{
+    border:1px solid var(--gold);
+    color:var(--gold-soft)!important;
+    padding:9px 22px;border-radius:2px;
+    opacity:1!important;
+  }
+  .nav-cta:hover{background:var(--gold);color:var(--bg)!important}
+  .burger{display:none;flex-direction:column;gap:5px;cursor:pointer}
+  .burger span{width:26px;height:1.5px;background:var(--cream)}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100vh;
+    position:relative;
+    display:flex;align-items:center;
+    color:var(--cream);
+    background:
+      radial-gradient(120% 120% at 70% 10%, rgba(168,73,47,.22), transparent 55%),
+      linear-gradient(180deg, rgba(20,15,11,.58), rgba(18,13,9,.86)),
+      url('https://images.unsplash.com/photo-1481931098730-318b6f776db0?w=1700&q=72&auto=format&fit=crop') center/cover no-repeat,
+      #2b2118;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";position:absolute;inset:0;
+    background-image:
+      radial-gradient(circle at 20% 80%, rgba(200,164,92,.10), transparent 40%),
+      radial-gradient(circle at 85% 30%, rgba(90,107,74,.18), transparent 45%);
+    pointer-events:none;
+  }
+  .hero-inner{position:relative;z-index:2;padding:120px 28px 80px}
+  .hero h1{
+    font-family:var(--display);
+    font-size:clamp(3rem,9vw,6.4rem);
+    font-weight:500;line-height:1.04;
+    margin:.18em 0 .35em;
+  }
+  .hero h1 em{font-style:italic;color:var(--gold-soft)}
+  .hero p.lead{
+    font-size:clamp(1rem,2.2vw,1.25rem);
+    max-width:30em;color:#e8ddcd;font-weight:300;
+  }
+  .hero-actions{display:flex;gap:18px;margin-top:42px;flex-wrap:wrap}
+  .btn{
+    font-family:var(--display);
+    letter-spacing:.14em;font-size:1rem;
+    padding:15px 34px;border-radius:2px;
+    transition:all .3s ease;cursor:pointer;border:1px solid transparent;
+    display:inline-block;
+  }
+  .btn-primary{background:var(--gold);color:var(--bg);font-weight:600}
+  .btn-primary:hover{background:var(--gold-soft);transform:translateY(-2px)}
+  .btn-ghost{border-color:rgba(245,239,230,.5);color:var(--cream)}
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold-soft)}
+  .hero-meta{
+    position:absolute;bottom:38px;left:0;width:100%;z-index:2;
+  }
+  .hero-meta .wrap{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px}
+  .hero-meta span{font-family:var(--display);letter-spacing:.22em;font-size:.82rem;color:#cdbfa8}
+  .scroll-cue{font-family:var(--display);letter-spacing:.3em;font-size:.72rem;color:var(--gold);writing-mode:vertical-rl}
+
+  /* ---------- Concept ---------- */
+  .concept{background:var(--paper);padding:120px 0;position:relative}
+  .concept-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:70px;align-items:center}
+  .concept-copy p{margin-bottom:1.4em;color:#4a3f33}
+  .concept-sign{
+    font-family:var(--display);font-style:italic;font-size:1.4rem;color:var(--terra);margin-top:.4em;
+  }
+  .concept-visual{
+    aspect-ratio:4/5;border-radius:3px;position:relative;overflow:hidden;
+    background:
+      linear-gradient(180deg, rgba(26,20,16,0) 45%, rgba(26,20,16,.7)),
+      url('https://images.unsplash.com/photo-1498579150354-977475b7ea0b?w=1000&q=72&auto=format&fit=crop') center/cover no-repeat;
+    box-shadow:0 30px 60px -25px rgba(42,34,28,.5);
+  }
+  .concept-visual .plate{
+    position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:flex-start;flex-direction:column;color:var(--cream);text-align:left;padding:28px;
+  }
+  .concept-visual .plate .big{font-family:var(--display);font-style:italic;font-size:1.8rem;line-height:1.1;color:var(--gold-soft)}
+  .concept-visual .plate small{letter-spacing:.32em;font-size:.68rem;margin-top:8px;opacity:.92}
+  .stats{display:flex;gap:48px;margin-top:48px;flex-wrap:wrap}
+  .stat .num{font-family:var(--display);font-size:2.6rem;color:var(--terra);line-height:1}
+  .stat .lbl{font-size:.82rem;color:var(--muted);letter-spacing:.08em}
+
+  /* ---------- Menu ---------- */
+  .menu{background:var(--bg);color:var(--cream);padding:120px 0}
+  .menu .head{text-align:center;margin-bottom:64px}
+  .menu .head p{color:#b6a791;max-width:34em;margin:0 auto}
+  .courses{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-bottom:64px}
+  .course{
+    border:1px solid rgba(200,164,92,.28);
+    border-radius:3px;padding:38px 30px;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);
+    transition:transform .35s ease, border-color .35s ease;
+    position:relative;
+  }
+  .course:hover{transform:translateY(-6px);border-color:var(--gold)}
+  .course .tag{font-family:var(--display);letter-spacing:.3em;font-size:.7rem;color:var(--gold)}
+  .course h3{font-family:var(--display);font-size:1.9rem;font-weight:500;margin:10px 0 6px}
+  .course .price{font-family:var(--display);font-size:1.5rem;color:var(--gold-soft);margin-bottom:14px}
+  .course ul{list-style:none}
+  .course li{font-size:.9rem;color:#cabfae;padding:7px 0;border-bottom:1px dotted rgba(255,255,255,.08)}
+  .course li:last-child{border:none}
+  .course.featured{background:linear-gradient(180deg,rgba(200,164,92,.12),rgba(168,73,47,.06));border-color:var(--gold)}
+  .course.featured .tag{color:var(--terra);background:var(--gold-soft);padding:3px 10px;border-radius:20px;display:inline-block;letter-spacing:.18em}
+  .alacarte{display:grid;grid-template-columns:1fr 1fr;gap:14px 60px;max-width:860px;margin:0 auto}
+  .dish{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-bottom:1px dotted rgba(255,255,255,.12)}
+  .dish .d-name{font-size:1rem}
+  .dish .d-name small{display:block;font-family:var(--display);font-style:italic;color:var(--muted);font-size:.82rem}
+  .dish .d-price{font-family:var(--display);color:var(--gold-soft);white-space:nowrap}
+
+  /* ---------- Chef ---------- */
+  .chef{background:var(--bg-2);color:var(--cream);padding:120px 0}
+  .chef-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:64px;align-items:center}
+  .chef-photo{
+    aspect-ratio:3/4;border-radius:3px;overflow:hidden;position:relative;
+    background:
+      linear-gradient(180deg, rgba(26,20,16,0) 55%, rgba(26,20,16,.85)),
+      url('https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=1000&q=72&auto=format&fit=crop') center/cover no-repeat;
+    box-shadow:0 30px 70px -30px rgba(0,0,0,.7);
+  }
+  .chef-photo .cap{position:absolute;bottom:20px;left:24px;font-family:var(--display);letter-spacing:.2em;font-size:.8rem;color:var(--gold-soft)}
+  .chef blockquote{
+    font-family:var(--display);font-style:italic;font-size:clamp(1.5rem,3vw,2rem);
+    line-height:1.5;color:var(--cream);margin:0 0 28px;
+  }
+  .chef blockquote span{color:var(--gold-soft)}
+  .chef-name{font-family:var(--display);font-size:1.3rem;letter-spacing:.1em;color:var(--gold)}
+  .chef-role{font-size:.85rem;color:var(--muted);letter-spacing:.1em;margin-bottom:24px}
+  .chef p{color:#c6baa8}
+
+  /* ---------- Gallery ---------- */
+  .gallery{padding:120px 0;background:var(--paper)}
+  .gallery .head{text-align:center;margin-bottom:56px}
+  .grid-photos{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:200px;gap:14px}
+  .ph{border-radius:3px;overflow:hidden;position:relative;color:var(--cream);
+    display:flex;align-items:flex-end;padding:18px;font-family:var(--display);letter-spacing:.18em;font-size:.85rem;
+    background-size:cover;background-position:center;background-repeat:no-repeat;
+    transition:transform .4s ease, filter .4s ease;filter:saturate(.95);
+  }
+  .ph::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.6))}
+  .ph span{position:relative;z-index:1}
+  .ph:hover{transform:scale(1.015);filter:saturate(1.12)}
+  .ph.big{grid-column:span 2;grid-row:span 2}
+  .ph.tall{grid-row:span 2}
+
+  /* ---------- Voice ---------- */
+  .voice{background:var(--bg);color:var(--cream);padding:110px 0}
+  .voice .head{text-align:center;margin-bottom:56px}
+  .reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  .review{border:1px solid rgba(200,164,92,.2);border-radius:3px;padding:32px 28px;background:rgba(255,255,255,.02)}
+  .review .stars{color:var(--gold);letter-spacing:.25em;margin-bottom:14px}
+  .review p{font-size:.95rem;color:#d7cbb9;font-style:italic;font-family:var(--display);font-size:1.05rem}
+  .review .who{margin-top:18px;font-size:.8rem;color:var(--muted);letter-spacing:.08em}
+
+  /* ---------- Info / Reserve ---------- */
+  .info{padding:0;background:var(--bg-2);color:var(--cream)}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr}
+  .info-left{padding:110px 7% 110px 28px}
+  .info-right{
+    background:
+      linear-gradient(180deg,rgba(18,13,9,.72),rgba(18,13,9,.84)),
+      url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1100&q=72&auto=format&fit=crop') center/cover no-repeat;
+    padding:110px 28px 110px 7%;display:flex;flex-direction:column;justify-content:center;
+  }
+  .info dl{display:grid;grid-template-columns:auto 1fr;gap:18px 24px;margin-top:32px}
+  .info dt{font-family:var(--display);letter-spacing:.18em;color:var(--gold);font-size:.85rem;white-space:nowrap}
+  .info dd{color:#ddd2c0;font-size:.95rem}
+  .reserve-card h3{font-family:var(--display);font-size:2.2rem;font-weight:500;margin-bottom:8px}
+  .reserve-card p{color:#e8ddcd;margin-bottom:26px}
+  .reserve-card .tel{font-family:var(--display);font-size:2.6rem;color:var(--cream);letter-spacing:.06em;line-height:1.2}
+  .reserve-card .tel small{display:block;font-size:.8rem;letter-spacing:.2em;color:var(--gold-soft);margin-bottom:4px}
+  .reserve-card .btn{margin-top:26px}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--bg);color:#bdae99;padding:60px 0 40px;text-align:center}
+  footer .brand{font-size:1.8rem;margin-bottom:10px}
+  footer .fnav{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin:24px 0;font-family:var(--display);letter-spacing:.16em;font-size:.9rem}
+  footer .fnav a:hover{color:var(--gold-soft)}
+  footer .copy{font-size:.75rem;letter-spacing:.1em;color:#6f6353;margin-top:18px}
+
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s ease, transform .9s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- Responsive ---------- */
+  @media(max-width:880px){
+    .nav-links{display:none}
+    .burger{display:flex}
+    .concept-grid,.chef-grid,.info-grid{grid-template-columns:1fr;gap:44px}
+    .courses,.reviews{grid-template-columns:1fr}
+    .alacarte{grid-template-columns:1fr}
+    .grid-photos{grid-template-columns:repeat(2,1fr);grid-auto-rows:160px}
+    .ph.big{grid-column:span 2;grid-row:span 1}
+    .info-left{padding:80px 28px 40px}
+    .info-right{padding:40px 28px 80px}
+    .hero{flex-direction:column;justify-content:center}
+    .hero h1{font-size:clamp(2.6rem,11vw,4rem)}
+    .hero-inner{padding:110px 24px 30px;width:100%}
+    .hero-actions{flex-direction:column}
+    .hero-actions .btn{text-align:center}
+    .hero-meta{position:static;margin-top:36px;padding-bottom:20px}
+    .hero-meta .wrap{justify-content:flex-start}
+    .scroll-cue{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header id="header">
+  <div class="wrap nav">
+    <div class="brand">Osteria del Sole<small>DAL 2014 · TOKYO</small></div>
+    <nav class="nav-links">
+      <a href="#concept">Concept</a>
+      <a href="#menu">Menu</a>
+      <a href="#chef">Chef</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#info">Access</a>
+      <a href="#info" class="nav-cta">Reserve</a>
+    </nav>
+    <div class="burger" id="burger"><span></span><span></span><span></span></div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="wrap hero-inner">
+    <span class="eyebrow">Cucina Italiana Stagionale</span>
+    <h1>太陽と土の恵みを、<br><em>一皿の物語</em>に。</h1>
+    <p class="lead">市場で出会った旬の食材だけで、その日のメニューを組み立てる。
+      シェフがひとりで向き合う、12席だけの小さなオステリア。</p>
+    <div class="hero-actions">
+      <a href="#info" class="btn btn-primary">席を予約する</a>
+      <a href="#menu" class="btn btn-ghost">本日のコースを見る</a>
+    </div>
+  </div>
+  <div class="hero-meta">
+    <div class="wrap">
+      <span>Lunch 11:30 – 14:00 ／ Dinner 18:00 – 22:00</span>
+      <span class="scroll-cue">SCROLL</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPT -->
+<section class="concept" id="concept">
+  <div class="wrap concept-grid">
+    <div class="concept-copy reveal">
+      <span class="eyebrow">Il Nostro Concetto</span>
+      <h2 class="section-title">献立は、<br>市場で決まる。</h2>
+      <p>毎朝シェフ自らが青果市場と漁港へ足を運び、その日いちばん良かったものだけを連れて帰ります。だから黒板のメニューは毎日変わる。固定の名物はありません。あるのは「今日この瞬間のイタリア」だけ。</p>
+      <p>パスタは一皿ずつ手打ちで。トマトは南イタリアの農家から直送。ワインは造り手の顔が見える自然派を中心に、グラスで気軽に楽しめるように。</p>
+      <p class="concept-sign">— Buon appetito, dalla nostra cucina.</p>
+      <div class="stats">
+        <div class="stat"><div class="num">12</div><div class="lbl">席だけの空間</div></div>
+        <div class="stat"><div class="num">朝採れ</div><div class="lbl">毎日仕入れ</div></div>
+        <div class="stat"><div class="num">40+</div><div class="lbl">自然派ワイン</div></div>
+      </div>
+    </div>
+    <div class="concept-visual reveal">
+      <div class="plate">
+        <div class="big">il mercato<br>di oggi</div>
+        <small>SEASONAL · HANDMADE · HONEST</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="menu" id="menu">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">Menù del Giorno</span>
+      <h2 class="section-title light">本日のおすすめ</h2>
+      <p>季節で内容が変わるおまかせコース。アレルギーや苦手な食材は、ご予約時にお気軽にお知らせください。</p>
+    </div>
+
+    <div class="courses">
+      <div class="course reveal">
+        <span class="tag">PRANZO</span>
+        <h3>ランチコース</h3>
+        <div class="price">¥3,800</div>
+        <ul>
+          <li>本日の前菜盛り合わせ</li>
+          <li>選べる手打ちパスタ</li>
+          <li>ドルチェ ＆ 食後の飲み物</li>
+        </ul>
+      </div>
+      <div class="course featured reveal">
+        <span class="tag">PIÙ POPOLARE</span>
+        <h3>ソーレ・コース</h3>
+        <div class="price">¥7,800</div>
+        <ul>
+          <li>アンティパスト 3種</li>
+          <li>本日の鮮魚カルパッチョ</li>
+          <li>手打ちパスタ 2種</li>
+          <li>肉または魚のメイン</li>
+          <li>ドルチェ＆カフェ</li>
+        </ul>
+      </div>
+      <div class="course reveal">
+        <span class="tag">DEGUSTAZIONE</span>
+        <h3>おまかせ全8品</h3>
+        <div class="price">¥12,000</div>
+        <ul>
+          <li>シェフ厳選の旬コース</li>
+          <li>その日の最高の食材で</li>
+          <li>ワインペアリング可（+¥5,500）</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="alacarte">
+      <div class="dish"><div class="d-name">水牛モッツァレラとフルーツトマト<small>Caprese di Bufala</small></div><div class="d-price">¥1,600</div></div>
+      <div class="dish"><div class="d-name">仔牛のヴィテロ・トンナート<small>Vitello Tonnato</small></div><div class="d-price">¥1,800</div></div>
+      <div class="dish"><div class="d-name">ウニのトンナレッリ<small>Tonnarelli ai Ricci</small></div><div class="d-price">¥2,400</div></div>
+      <div class="dish"><div class="d-name">薪窯の本日のピッツァ<small>Pizza del Giorno</small></div><div class="d-price">¥1,900</div></div>
+      <div class="dish"><div class="d-name">骨付き仔羊のグリル<small>Agnello alla Griglia</small></div><div class="d-price">¥3,200</div></div>
+      <div class="dish"><div class="d-name">手作りティラミス<small>Tiramisù della Casa</small></div><div class="d-price">¥900</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CHEF -->
+<section class="chef" id="chef">
+  <div class="wrap chef-grid">
+    <div class="chef-photo reveal">
+      <div class="cap">CHEF / PROPRIETARIO</div>
+    </div>
+    <div class="chef-copy reveal">
+      <span class="eyebrow">Lo Chef</span>
+      <blockquote>「派手な皿はいらない。<br><span>食べた人が、もう一度</span><br>来たくなる味だけでいい。」</blockquote>
+      <div class="chef-name">桜井 亮介 — Ryosuke Sakurai</div>
+      <div class="chef-role">オーナーシェフ</div>
+      <p>イタリア・ピエモンテとプーリアの郷土料理店で計7年間修業。
+        帰国後、ひとりで全ての皿に責任を持てる規模にこだわり、2014年にこの12席の店を開きました。
+        仕入れ・調理・サービスまで、お客様の顔が見える距離で。それが「個人店だからできること」だと思っています。</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="gallery">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">Galleria</span>
+      <h2 class="section-title">店内と、料理と。</h2>
+    </div>
+    <div class="grid-photos reveal">
+      <div class="ph big" style="background-image:url('https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=1100&q=72&auto=format&fit=crop')"><span>手打ちパスタ</span></div>
+      <div class="ph tall" style="background-image:url('https://images.unsplash.com/photo-1592417817098-8fd3d9eb14a5?w=700&q=72&auto=format&fit=crop')"><span>旬の前菜</span></div>
+      <div class="ph" style="background-image:url('https://images.unsplash.com/photo-1513104890138-7c749659a591?w=700&q=72&auto=format&fit=crop')"><span>薪窯ピッツァ</span></div>
+      <div class="ph" style="background-image:url('https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=700&q=72&auto=format&fit=crop')"><span>自然派ワイン</span></div>
+      <div class="ph tall" style="background-image:url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&q=72&auto=format&fit=crop')"><span>店内・カウンター</span></div>
+      <div class="ph" style="background-image:url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&q=72&auto=format&fit=crop')"><span>シェフの一皿</span></div>
+      <div class="ph" style="background-image:url('https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=700&q=72&auto=format&fit=crop')"><span>自家製ドルチェ</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- VOICE -->
+<section class="voice">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">La Voce degli Ospiti</span>
+      <h2 class="section-title light">お客様の声</h2>
+    </div>
+    <div class="reviews">
+      <div class="review reveal">
+        <div class="stars">★★★★★</div>
+        <p>「毎回メニューが違うから、通うたびに新しい発見がある。シェフとの距離が近いのも個人店ならでは。」</p>
+        <div class="who">— 40代・記念日のディナーで</div>
+      </div>
+      <div class="review reveal">
+        <div class="stars">★★★★★</div>
+        <p>「手打ちパスタのもちもち感が衝撃でした。自然派ワインのペアリングも丁寧で大満足。」</p>
+        <div class="who">— 30代・ワイン好きのお客様</div>
+      </div>
+      <div class="review reveal">
+        <div class="stars">★★★★★</div>
+        <p>「12席だけの静かな空間で、料理に集中できる。大切な人と過ごすのにぴったりのお店です。」</p>
+        <div class="who">— 50代・ご夫婦で</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INFO / RESERVE -->
+<section class="info" id="info">
+  <div class="info-grid">
+    <div class="info-left reveal">
+      <span class="eyebrow">Informazioni</span>
+      <h2 class="section-title light">店舗情報・アクセス</h2>
+      <dl>
+        <dt>住所</dt><dd>東京都目黒区中目黒 0-0-0 ソーレビル 1F</dd>
+        <dt>最寄り</dt><dd>東急東横線・中目黒駅 徒歩5分</dd>
+        <dt>営業時間</dt><dd>ランチ 11:30–14:00（L.O.13:30）<br>ディナー 18:00–22:00（L.O.20:30）</dd>
+        <dt>定休日</dt><dd>月曜・第2火曜</dd>
+        <dt>席数</dt><dd>カウンター6席・テーブル6席（計12席）</dd>
+        <dt>ご利用</dt><dd>個室なし／お子様連れはディナー前半のみ可</dd>
+      </dl>
+    </div>
+    <div class="info-right reveal">
+      <div class="reserve-card">
+        <span class="eyebrow">Prenotazione</span>
+        <h3>ご予約のお願い</h3>
+        <p>席数が限られているため、ご予約をおすすめしています。
+          当日のお席状況はお電話でお問い合わせください。</p>
+        <div class="tel"><small>TEL · 予約専用ダイヤル</small>03-0000-0000</div>
+        <a href="#" class="btn btn-primary">オンラインで予約する</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brand">Osteria del Sole</div>
+    <div class="fnav">
+      <a href="#concept">Concept</a>
+      <a href="#menu">Menu</a>
+      <a href="#chef">Chef</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#info">Access</a>
+    </div>
+    <div class="copy">© 2026 Osteria del Sole. All rights reserved. — 中目黒の小さなイタリアン</div>
+  </div>
+</footer>
+
+<script>
+  // nav background on scroll
+  const header = document.getElementById('header');
+  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 40);
+  window.addEventListener('scroll', onScroll); onScroll();
+
+  // reveal on view
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  }, {threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // burger -> jump to reserve (simple mobile fallback)
+  document.getElementById('burger').addEventListener('click', ()=>{
+    document.getElementById('info').scrollIntoView({behavior:'smooth'});
+  });
+</script>
+</body>
+</html>
