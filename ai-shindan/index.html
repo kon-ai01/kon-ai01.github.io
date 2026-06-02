@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>あなたのAIタイプ診断｜10問でわかる</title>
-<meta name="description" content="10問でわかる、あなたのAIタイプ診断。キャラ＆ステータスで結果が出る。スマホでもPCでも遊べる。" />
+<title>あなたのAIとの付き合い方診断｜10問でわかる</title>
+<meta name="description" content="10問でわかる、あなたのAIとの付き合い方診断。AI相棒キャラ＆ステータスで結果が出る。スマホでもPCでも遊べる。" />
 <style>
   :root{
     --bg:#0a0812;
@@ -161,8 +161,8 @@
   <!-- INTRO -->
   <section id="intro" class="panel">
     <span class="badge"><span class="dot"></span>10問・約1分でわかる</span>
-    <h1 class="title">あなたの<span class="g">AIタイプ</span><br>診断</h1>
-    <p class="lead">直感で10問に答えるだけ。あなただけの<b style="color:#fff">AI相棒キャラ</b>と、5つのステータスで結果が出る。スマホでもPCでも遊べる。</p>
+    <h1 class="title">あなたの<br><span class="g">AIとの付き合い方</span><br>診断</h1>
+    <p class="lead">直感で10問に答えるだけ。あなたが<b style="color:#fff">AIをどう使うタイプか</b>を、相棒キャラと5つのステータスで判定するよ。スマホでもPCでも遊べる。</p>
     <div class="meta-row">
       <span class="chip"><b>全10問</b></span>
       <span class="chip"><b>6キャラ</b>判定</span>
@@ -189,7 +189,7 @@
     <div class="sheet-top">
       <div class="avatar" id="avatar"></div>
       <div class="rarity" id="rRarity"></div>
-      <div class="rkicker" id="rKicker">AI TYPE</div>
+      <div class="rkicker" id="rKicker">AI STYLE</div>
       <h2 class="rname" id="rTitle">タイプ</h2>
       <p class="rcatch" id="rCatch"></p>
     </div>
@@ -211,7 +211,7 @@
       <button class="btn secondary" id="retryBtn">もう一度診断する</button>
     </div>
     <div class="copied" id="copied">コピーしたよ。Threadsに貼ってね</div>
-    <div class="foot">#あなたのAIタイプ診断　みんなの結果コメントで教えて</div>
+    <div class="foot">#AIとの付き合い方診断　みんなの結果コメントで教えて</div>
   </section>
 
   <!-- 画像保存モーダル -->
@@ -417,7 +417,7 @@
     R.style.setProperty("--tc2",T.color2);
     el("avatar").innerHTML=avatarHTML(T);
     el("rRarity").innerHTML=rarityStars(T.rarity);
-    el("rKicker").textContent="AI TYPE ／ "+T.kicker;
+    el("rKicker").textContent="AI STYLE ／ "+T.kicker;
     el("rTitle").textContent=T.title+"タイプ";
     el("rCatch").textContent="「"+T.catch+"」";
     renderStats(T);
@@ -435,7 +435,7 @@
   // ===== シェアテキスト =====
   function buildShareText(key){
     var T=TYPES[key];
-    return "私のAIタイプは "+T.emoji+T.title+"タイプ でした。\n「"+T.catch+"」\n\nあなたのAIタイプは？\n#あなたのAIタイプ診断";
+    return "私の『AIとの付き合い方』は "+T.emoji+T.title+"タイプ でした。\n「"+T.catch+"」\n\nあなたはどのタイプ？\n#AIとの付き合い方診断";
   }
   function copyResult(){
     var key=el("copyBtn").dataset.key;if(!key)return;
@@ -494,7 +494,7 @@
     x.textAlign="center";
     // キッカー
     x.fillStyle=hexA("#ffffff",.62);x.font="800 30px system-ui,sans-serif";
-    x.fillText("AI TYPE DIAGNOSIS ／ "+T.kicker, cx, 130);
+    x.fillText("AI STYLE DIAGNOSIS ／ "+T.kicker, cx, 130);
     // レア度
     x.font="40px system-ui,sans-serif";
     var stars="";for(var i=0;i<5;i++)stars+=(i<T.rarity?"★":"☆");
@@ -519,7 +519,7 @@
     // フッター
     x.textAlign="center";
     x.fillStyle=hexA("#ffffff",.92);x.font="800 38px system-ui,sans-serif";
-    x.fillText("#あなたのAIタイプ診断", cx, H-122);
+    x.fillText("#AIとの付き合い方診断", cx, H-122);
     x.fillStyle=hexA("#ffffff",.4);x.font="500 28px system-ui,sans-serif";
     x.fillText("kon-ai01.github.io/ai-shindan", cx, H-74);
 
